@@ -5,7 +5,7 @@ type Props = {};
 export default function Spinner({}: Props) {
   return (
     <div
-      className="flex min-h-[600px] items-center justify-center"
+      className="flex min-h-[400px] items-center justify-center"
       role="status"
     >
       <svg

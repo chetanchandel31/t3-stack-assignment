@@ -1,4 +1,5 @@
 import React from "react";
+import BtnLogout from "./BtnLogout";
 
 type Props = {};
 
@@ -14,6 +15,8 @@ export default function Header({}: Props) {
           <div className="text-sm font-semibold">Clearance</div>
           <div className="text-sm font-semibold">New stock</div>
         </div>
+
+        <BtnLogout />
       </div>
     </header>
   );
