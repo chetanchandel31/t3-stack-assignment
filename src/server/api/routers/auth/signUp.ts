@@ -55,7 +55,7 @@ export const signUp = publicProcedure
         encryptedPassword,
 
         isEmailVerified: false,
-        latestOtpSentAt: new Date(),
+        latestOtpSentAtMs: new Date(),
         latestOtpSent,
       },
     });

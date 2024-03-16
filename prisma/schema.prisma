@@ -21,8 +21,8 @@ model User {
     encryptedPassword String
     salt              String
 
-    latestOtpSent   String
-    latestOtpSentAt DateTime
+    latestOtpSent     String
+    latestOtpSentAtMs DateTime
 
     isEmailVerified Boolean
 }

@@ -40,7 +40,7 @@ export const logIn = publicProcedure
     ) {
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message: "Email already exists, please sign in",
+        message: "Invalid credentials",
       });
     }
 
