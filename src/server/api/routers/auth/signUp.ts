@@ -26,6 +26,7 @@ export const signUp = publicProcedure
     }),
   )
   .mutation(async ({ ctx, input }): Promise<TypeSignUpResponse> => {
+    // validations
     const existingUser = await ctx.db.user.findUnique({
       where: { email: input.email },
     });
@@ -37,27 +38,40 @@ export const signUp = publicProcedure
       });
     }
 
+    // send otp
+    const latestOtpSent = generateSixDigitOtp();
+    await sendOtpToEmail({ emailAddress: input.email, otp: latestOtpSent });
+
+    // add/update user entry in db
     const salt = uuid();
     const encryptedPassword = getEncryptedPassword({
       plainPassword: input.password,
       salt,
     });
-    const latestOtpSent = generateSixDigitOtp();
 
-    await sendOtpToEmail({ emailAddress: input.email, otp: latestOtpSent });
+    const data = {
+      email: input.email,
+      name: input.name,
+
+      salt,
+      encryptedPassword,
+
+      isEmailVerified: false,
+      latestOtpSentAtMs: new Date(),
+      latestOtpSent,
+    };
+
+    if (existingUser) {
+      const updatedUser = await ctx.db.user.update({
+        where: { email: input.email },
+        data,
+      });
+
+      return { name: updatedUser.name, email: updatedUser.email };
+    }
 
     const createdUser = await ctx.db.user.create({
-      data: {
-        email: input.email,
-        name: input.name,
-
-        salt,
-        encryptedPassword,
-
-        isEmailVerified: false,
-        latestOtpSentAtMs: new Date(),
-        latestOtpSent,
-      },
+      data,
     });
 
     return { name: createdUser.name, email: createdUser.email };

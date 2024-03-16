@@ -17,11 +17,7 @@ export default function ClientComponent({}: Props) {
     <div>
       <button
         onClick={async () => {
-          const res = await authSignUp.mutateAsync({
-            email: "chetanchandel31@gmail.com",
-            password: "tolstoy2010",
-            name: "abc",
-          });
+          //
         }}
       >
         hi
