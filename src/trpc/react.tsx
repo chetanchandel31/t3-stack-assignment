@@ -5,10 +5,25 @@ import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 import SuperJSON from "superjson";
-
+import { toast } from "~/components/ui/use-toast";
 import { type AppRouter } from "~/server/api/root";
 
-const createQueryClient = () => new QueryClient();
+const createQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      mutations: {
+        // if need to overwrite it for a particular instance, just pass custom `onError` function while calling useMutation
+        onError: (error) => {
+          console.log("#iyw37468734", error);
+          toast({
+            title: "Email verification failed",
+            description: <div>{error.message}</div>,
+            variant: "destructive",
+          });
+        },
+      },
+    },
+  });
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 const getQueryClient = () => {
@@ -43,7 +58,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
           },
         }),
       ],
-    })
+    }),
   );
 
   return (
