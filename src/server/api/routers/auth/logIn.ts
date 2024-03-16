@@ -2,10 +2,12 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { publicProcedure } from "~/server/api/trpc";
 import getEncryptedPassword from "./helpers/getEncryptedPassword";
+import { generateAuthToken } from "./helpers/authToken";
 
 type TypeSignInResponse = {
   name: string;
   userId: string;
+  email: string;
   authToken: string;
   authTokenExpiresAtMs: number;
 };
@@ -44,7 +46,15 @@ export const logIn = publicProcedure
       });
     }
 
-    // TODO: generate and send auth token
+    const { authToken, authTokenExpiresAtMs } = generateAuthToken({
+      userId: existingUser.userId,
+    });
 
-    return { authToken: "", authTokenExpiresAtMs: 0, name: "", userId: "" };
+    return {
+      authToken,
+      authTokenExpiresAtMs,
+      name: existingUser.name,
+      userId: existingUser.userId,
+      email: existingUser.email,
+    };
   });
