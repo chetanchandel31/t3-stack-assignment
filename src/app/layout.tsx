@@ -6,6 +6,9 @@ import { TRPCReactProvider } from "~/trpc/react";
 import { cn } from "~/lib/utils";
 import Header from "./_components/Header";
 import { Toaster } from "~/components/ui/toaster";
+import AuthProvider from "./providers/AuthProvider";
+import { cookies } from "next/headers";
+import { AUTH_TOKEN } from "~/config";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,6 +26,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const authTokenFromServerRequest = cookies().get(AUTH_TOKEN)?.value;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -32,11 +37,13 @@ export default function RootLayout({
         )}
       >
         <TRPCReactProvider>
-          <Header />
+          <AuthProvider authTokenFromServerRequest={authTokenFromServerRequest}>
+            <Header />
 
-          <div className="pb-16">{children}</div>
+            <div className="pb-16">{children}</div>
 
-          <Toaster />
+            <Toaster />
+          </AuthProvider>
         </TRPCReactProvider>
       </body>
     </html>

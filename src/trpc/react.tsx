@@ -16,7 +16,7 @@ const createQueryClient = () =>
         onError: (error) => {
           console.log("#iyw37468734", error);
           toast({
-            title: "Email verification failed",
+            // title: "Action failed",
             description: <div>{error.message}</div>,
             variant: "destructive",
           });
