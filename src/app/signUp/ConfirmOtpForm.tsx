@@ -68,7 +68,7 @@ export default function ConfirmOtpForm({
       title: "Sign up successful",
       description: (
         <div>
-          Please log in with <strong>{confirmOtpResult.email}</strong>
+          You can now log in with <strong>{confirmOtpResult.email}</strong>
         </div>
       ),
     });

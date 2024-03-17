@@ -25,6 +25,30 @@ model User {
     latestOtpSentAtMs DateTime
 
     isEmailVerified Boolean
+
+    CategoryOnUser CategoryOnUser[]
+}
+
+model Category {
+    categoryId String @id @default(dbgenerated("(concat('category-', gen_random_uuid()))::TEXT")) // Automated field. Random id with prefix. Random part made of [A-z0-9_]{25}.
+    title      String @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    CategoryOnUser CategoryOnUser[]
+}
+
+model CategoryOnUser {
+    user   User   @relation(fields: [userId], references: [userId])
+    userId String // relation scalar field (used in the `@relation` attribute above)
+
+    category   Category @relation(fields: [categoryId], references: [categoryId])
+    categoryId String // relation scalar field (used in the `@relation` attribute above)
+
+    assignedAt DateTime @default(now())
+
+    @@id([userId, categoryId])
 }
 
 model Post {
