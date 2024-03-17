@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { publicProcedure } from "../../trpc";
 
-type TypeResponse = {
+export type TypeCategoryListResponse = {
   totalPages: number;
   nextPage: number | null;
   items: { categoryId: string; title: string }[];
@@ -19,7 +19,7 @@ export const list = publicProcedure
         .max(100, { message: "per-page should be more than 100" }),
     }),
   )
-  .query(async ({ ctx, input }): Promise<TypeResponse> => {
+  .query(async ({ ctx, input }): Promise<TypeCategoryListResponse> => {
     // query database
     const categories = await ctx.db.category.findMany({
       skip: (input.page - 1) * input.perPage,
@@ -27,7 +27,7 @@ export const list = publicProcedure
     });
 
     // build items
-    const items: TypeResponse["items"] = categories.map(
+    const items: TypeCategoryListResponse["items"] = categories.map(
       ({ categoryId, title }) => ({ categoryId, title }),
     );
 

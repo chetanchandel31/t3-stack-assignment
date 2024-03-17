@@ -1,16 +1,16 @@
 import React from "react";
 
-type Props = {};
+type Props = { minHeight?: number; spinnerSize?: number };
 
-export default function Spinner({}: Props) {
+export default function Spinner({ minHeight = 400, spinnerSize = 40 }: Props) {
   return (
     <div
-      className="flex min-h-[400px] items-center justify-center"
+      className={`flex min-h-[${minHeight}px] items-center justify-center`}
       role="status"
     >
       <svg
         aria-hidden="true"
-        className="h-40 w-40 animate-spin fill-black text-gray-200 dark:text-gray-600"
+        className={`h-${spinnerSize} w-${spinnerSize} animate-spin fill-black text-gray-200 dark:text-gray-600`}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
