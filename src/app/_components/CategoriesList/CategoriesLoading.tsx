@@ -2,15 +2,12 @@ import React from "react";
 
 type Props = {};
 
-export default function Spinner({}: Props) {
+export default function CategoriesLoading({}: Props) {
   return (
-    <div
-      className="flex min-h-[600px] items-center justify-center"
-      role="status"
-    >
+    <div className="flex  items-center justify-center" role="status">
       <svg
         aria-hidden="true"
-        className="h-40 w-40 animate-spin fill-black text-gray-200 dark:text-gray-600"
+        className="h-20 w-20 animate-spin fill-black text-gray-200 dark:text-gray-600"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

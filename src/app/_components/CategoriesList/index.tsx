@@ -4,10 +4,10 @@ import { api } from "~/trpc/react";
 import CardContainer from "../CardContainer";
 import CategoriesPagination from "./CategoriesPagination";
 import { useState } from "react";
-import Spinner from "../Spinner";
 import CategoriesListHeadings from "./CategoriesListHeadings";
 import CategoryListItem from "./CategoryListItem";
 import getAccessToken from "~/app/providers/AuthProvider/helpers/getAuthToken";
+import CategoriesLoading from "./CategoriesLoading";
 
 type Props = {};
 
@@ -25,8 +25,8 @@ export default function CategoriesList({}: Props) {
       <CategoriesListHeadings />
 
       {categories.isLoading ? (
-        <div className="flex min-h-[144px] items-center justify-center">
-          <Spinner minHeight={200} spinnerSize={11} />
+        <div className="flex min-h-[240px] items-center justify-center">
+          <CategoriesLoading />
         </div>
       ) : (
         <div className="mt-4 flex flex-col items-stretch gap-6">
