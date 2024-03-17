@@ -7,6 +7,7 @@ import { useState } from "react";
 import Spinner from "../Spinner";
 import CategoriesListHeadings from "./CategoriesListHeadings";
 import CategoryListItem from "./CategoryListItem";
+import getAccessToken from "~/app/providers/AuthProvider/helpers/getAuthToken";
 
 type Props = {};
 
@@ -14,6 +15,10 @@ export default function CategoriesList({}: Props) {
   const [page, setPage] = useState(1);
 
   const categories = api.category.list.useQuery({ page, perPage: 6 });
+
+  const selectedCategories = api.category.listSelectedCategories.useQuery({
+    authToken: getAccessToken() ?? "",
+  });
 
   return (
     <CardContainer>
@@ -27,7 +32,14 @@ export default function CategoriesList({}: Props) {
         <div className="mt-4 flex flex-col items-stretch gap-6">
           <div className="flex flex-col items-stretch gap-4">
             {categories.data?.items.map((category) => (
-              <CategoryListItem category={category} key={category.categoryId} />
+              <CategoryListItem
+                category={category}
+                isSelected={
+                  selectedCategories.data?.includes(category.categoryId) ===
+                  true
+                }
+                key={category.categoryId}
+              />
             ))}
           </div>
 

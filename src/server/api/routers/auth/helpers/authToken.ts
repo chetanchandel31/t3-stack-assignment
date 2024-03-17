@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
 import { env } from "~/env";
 
@@ -19,3 +20,18 @@ export function generateAuthToken({
   return { authToken, authTokenExpiresAtMs };
 }
 
+export function getUserIdFromAuthToken({ authToken }: { authToken: string }) {
+  const decodedData = jwt.verify(authToken, SECRET);
+
+  if (
+    typeof decodedData === "string" ||
+    typeof decodedData?.userId !== "string"
+  ) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Bad auth token",
+    });
+  }
+
+  return decodedData?.userId;
+}

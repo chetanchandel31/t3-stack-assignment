@@ -1,52 +1,58 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../../trpc";
-import { TRPCError } from "@trpc/server";
-import { faker } from "@faker-js/faker";
 import { list } from "./list";
+import { getUserIdFromAuthToken } from "../auth/helpers/authToken";
+import { seed } from "./seed";
 
 export const categoryRouter = createTRPCRouter({
-  seed: publicProcedure.input(z.object({})).mutation(async ({ ctx }) => {
-    const existingCategoriesCount = await ctx.db.category.count();
+  seed,
+  list,
 
-    if (existingCategoriesCount >= 100) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "already seeded",
-      });
-    }
-
-    const categoriesMap: Record<string, true> = {};
-    let categoriesCount = 0;
-
-    while (categoriesCount < 100) {
-      let categoryTitle = faker.commerce.product();
-
-      if (categoriesMap[categoryTitle]) {
-        categoryTitle += ` ${faker.lorem.word()}`;
-      }
-
-      categoriesMap[categoryTitle] = true;
-      categoriesCount++;
-    }
-
-    await ctx.db.category.createMany({
-      data: Object.keys(categoriesMap).map((title) => ({ title })),
-    });
-
-    return categoriesCount;
-  }),
-
-  listOwn: publicProcedure
-    .input(z.object({ userId: z.string() }))
+  listSelectedCategories: publicProcedure
+    .input(z.object({ authToken: z.string() }))
     .query(async ({ ctx, input }) => {
-      await ctx.db.category.findMany({
+      const userId = getUserIdFromAuthToken({ authToken: input.authToken });
+
+      const selectedCategories = await ctx.db.category.findMany({
         where: {
           CategoryOnUser: {
-            some: { userId: input.userId },
+            some: { userId },
           },
         },
       });
+
+      return selectedCategories.map((category) => category.categoryId);
     }),
 
-  list,
+  select: publicProcedure
+    .input(z.object({ authToken: z.string(), categoryId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = getUserIdFromAuthToken({ authToken: input.authToken });
+
+      await ctx.db.categoryOnUser.create({
+        data: {
+          userId,
+          categoryId: input.categoryId,
+        },
+      });
+
+      return { isSuccess: true };
+    }),
+
+  unSelect: publicProcedure
+    .input(z.object({ authToken: z.string(), categoryId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = getUserIdFromAuthToken({ authToken: input.authToken });
+
+      await ctx.db.categoryOnUser.delete({
+        where: {
+          userId_categoryId: {
+            categoryId: input.categoryId,
+            userId,
+          },
+        },
+      });
+
+      return { isSuccess: true };
+    }),
 });
