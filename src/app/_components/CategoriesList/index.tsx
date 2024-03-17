@@ -1,10 +1,10 @@
 "use client";
 
 import { api } from "~/trpc/react";
-import CardContainer from "../_components/CardContainer";
+import CardContainer from "../CardContainer";
 import CategoriesPagination from "./CategoriesPagination";
 import { useState } from "react";
-import Spinner from "../_components/Spinner";
+import Spinner from "../Spinner";
 import CategoriesListHeadings from "./CategoriesListHeadings";
 import CategoryListItem from "./CategoryListItem";
 
