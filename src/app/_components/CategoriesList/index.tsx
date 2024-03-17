@@ -24,7 +24,7 @@ export default function CategoriesList({}: Props) {
     <CardContainer>
       <CategoriesListHeadings />
 
-      {categories.isLoading ? (
+      {categories.isLoading || selectedCategories.isLoading ? (
         <div className="flex min-h-[240px] items-center justify-center">
           <CategoriesLoading />
         </div>
